@@ -10,9 +10,12 @@ DEFAULT_FILENAME = "words.txt"
 DEFAULT_DUPLICATES = False
 
 
-def sort_list(items, ascending=True):
+def sort_list(items, ascending=True, remove_duplicates=False):
     if not isinstance(items, list):
         raise RuntimeError(f"No puede ordenar {type(items)}")
+
+    if remove_duplicates:
+        items = list(set(items))
 
     return sorted(items, reverse=(not ascending))
 
@@ -26,7 +29,11 @@ if __name__ == "__main__":
     remove_duplicates = DEFAULT_DUPLICATES
     if len(sys.argv) == 3:
         filename = sys.argv[1]
-        remove_duplicates = sys.argv[2].lower() == "yes"
+        remove_duplicates_arg = sys.argv[2].lower()
+        if remove_duplicates_arg not in ("yes", "no"):
+            print("El segundo argumento debe ser yes o no")
+            sys.exit(1)
+        remove_duplicates = remove_duplicates_arg == "yes"
     else:
         print("Se debe indicar el fichero como primer argumento")
         print("El segundo argumento indica si se quieren eliminar duplicados")
@@ -43,7 +50,4 @@ if __name__ == "__main__":
         print(f"El fichero {filename} no existe")
         word_list = ["ravenclaw", "gryffindor", "slytherin", "hufflepuff"]
 
-    if remove_duplicates:
-        word_list = remove_duplicates_from_list(word_list)
-
-    print(sort_list(word_list))
+    print(sort_list(word_list, remove_duplicates=remove_duplicates))
